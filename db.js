@@ -1,0 +1,6 @@
+const DB_NAME='techcomia_db_v2', STORE='products';
+function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE,{keyPath:'id',autoIncrement:true});};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+async function getAll(){const db=await openDB();return new Promise((res,rej)=>{const t=db.transaction(STORE,'readonly');const q=t.objectStore(STORE).getAll();q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});}
+async function addProduct(p){const db=await openDB();return new Promise((res,rej)=>{const t=db.transaction(STORE,'readwrite');const q=t.objectStore(STORE).add(p);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});}
+async function putProduct(p){const db=await openDB();return new Promise((res,rej)=>{const t=db.transaction(STORE,'readwrite');const q=t.objectStore(STORE).put(p);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});}
+async function removeProduct(id){const db=await openDB();return new Promise((res,rej)=>{const t=db.transaction(STORE,'readwrite');const q=t.objectStore(STORE).delete(id);q.onsuccess=()=>res();q.onerror=()=>rej(q.error);});}
